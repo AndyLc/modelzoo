@@ -99,6 +99,9 @@ const App: FC = () => {
               <Input.Search
                 allowClear
                 onSearch={setFilter}
+                onChange={({ target: { value } }) => {
+                  setFilter(value);
+                }}
               ></Input.Search>
             </Menu.Item>
 
