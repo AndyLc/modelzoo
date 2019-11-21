@@ -12,16 +12,18 @@ import { TagsSet, StatsSet } from "../Components/Tags";
 interface HomeProps {
   models: ModelObject[];
   client: ModelzooServicePromiseClient;
+  filter: String;
 }
 
 interface CatalogProps {
   // models: ModelObject[];
   client: ModelzooServicePromiseClient;
+  filter: String;
 }
 
 export const Catalog: FC<CatalogProps> = props => {
   // let { models } = props;
-  let { client } = props;
+  let { client, filter } = props;
   const [models, setModels] = useState<Array<ModelObject>>([]);
 
   useMemo(() => {
@@ -32,20 +34,28 @@ export const Catalog: FC<CatalogProps> = props => {
   }, [client]);
 
   let cards = models.map((model: ModelObject, index, arr) => {
-    return (
-      <Col span={8}>
-        <Card
-          title={model.name}
-          style={{ margin: "2px" }}
-          extra={<Link to={`model/${model.name}`}>Test it</Link>}
-        >
-          <Row>
-            <StatsSet model={model} showAll={false}></StatsSet>
-          </Row>
-          <TagsSet model={model} showAll={false}></TagsSet>
-        </Card>
-      </Col>
-    );
+    var show = false;
+    show = show || filter.length == 0 || model.name.toLowerCase().includes(filter.toLowerCase());
+    Object.keys(model.metadata).map(function(key) {
+      show = show || model.metadata[key][0].toLowerCase().includes(filter.toLowerCase());
+    })
+    console.log(model.metadata)
+    if (show) {
+      return (
+        <Col span={8}>
+          <Card
+            title={model.name}
+            style={{ margin: "2px" }}
+            extra={<Link to={`model/${model.name}`}>Test it</Link>}
+          >
+            <Row>
+              <StatsSet model={model} showAll={false}></StatsSet>
+            </Row>
+            <TagsSet model={model} showAll={false}></TagsSet>
+          </Card>
+        </Col>
+      );
+    }
   });
 
   return (
@@ -57,7 +67,6 @@ export const Catalog: FC<CatalogProps> = props => {
 
 export const Home: FC<HomeProps> = props => {
   // let { models } = props;
-  let { client } = props;
-
-  return <Catalog client={client}></Catalog>;
+  let { client, filter } = props;
+  return <Catalog client={client} filter={filter}></Catalog>;
 };

@@ -19,6 +19,7 @@ const App: FC = () => {
   const [tokenDrawerVisible, setTokenDrawerVisible] = useState(false);
   const [allModels, setAllModels] = useState<Array<ModelObject>>([]);
   console.log("App renders with token " + token);
+  const [filter, setFilter] = useState("");
 
   const client = useMemo(() => {
     let newClient = new ModelzooServicePromiseClient(
@@ -97,7 +98,7 @@ const App: FC = () => {
             <Menu.Item key="search">
               <Input.Search
                 allowClear
-                onSearch={value => console.log(value)}
+                onSearch={setFilter}
               ></Input.Search>
             </Menu.Item>
 
@@ -118,7 +119,7 @@ const App: FC = () => {
           >
             <Switch>
               <Route exact path="/">
-                <Home models={allModels} client={client} />
+                <Home models={allModels} client={client} filter={filter} />
               </Route>
               {/* <Route path="/catalog">
                 <Catalog

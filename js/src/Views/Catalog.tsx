@@ -14,6 +14,7 @@ interface CatalogProps {
 export const Catalog: FC<CatalogProps> = props => {
   // let { models } = props;
   let { client } = props;
+
   const [models, setModels] = useState<Array<ModelObject>>([]);
 
   useMemo(() => {
@@ -24,17 +25,19 @@ export const Catalog: FC<CatalogProps> = props => {
   }, [client]);
 
   let cards = models.map((model: ModelObject, index, arr) => {
-    return (
-      <Col span={8}>
-        <Card
-          title={model.name}
-          style={{ margin: "4px" }}
-          extra={<Link to={`model/${model.name}`}>Test it</Link>}
-        >
-          <TagsSet model={model} showAll={false}></TagsSet>
-        </Card>
-      </Col>
-    );
+    //if (true) {
+      return (
+        <Col span={8}>
+          <Card
+            title={model.name}
+            style={{ margin: "4px" }}
+            extra={<Link to={`model/${model.name}`}>Test it</Link>}
+          >
+            <TagsSet model={model} showAll={false}></TagsSet>
+          </Card>
+        </Col>
+      );
+    //}
   });
 
   return (
