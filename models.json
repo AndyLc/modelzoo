@@ -171,5 +171,14 @@
       { "key": "paper_link", "value": "https://arxiv.org/abs/1703.06870"},
       { "key": "metric_COCO_trainval35k_mAP_%", "value":"33.6"}
     ]
+  },
+  {
+    "@type": "/modelzoo.Test",
+    "test_name": "squash",
+    "metadata": [
+      { "key": "author", "value": "timomernick" },
+      { "key": "project", "value": "pytorch-capsule" },
+      { "key": "source", "value": "https://github.com/timomernick/pytorch-capsule" }
+    ]
   }
 ]
