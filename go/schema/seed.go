@@ -93,7 +93,16 @@ func Seed(filename string) {
 				log.Fatal(err)
 			}
 
-			log.Printf("Model %v created.", model.ModelName)
+		case "/modelzoo.Test":
+			test := modelzoo.Test{}
+			if err := ptypes.UnmarshalAny(&msg, &test); err != nil {
+				log.Fatal(err)
+			}
+			if err := CreateTest(db, &test); err != nil {
+				log.Fatal(err)
+			}
+
+			log.Printf("Test %v created.", test.TestName)
 		default:
 			log.Fatalf("Message of type %s is not yet supported.", msg.TypeUrl)
 		}

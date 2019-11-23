@@ -81,6 +81,34 @@ func (s *ProxyServer) ListModels(
 	return &resp, nil
 }
 
+// ListTests returns the list of tests in current db.
+func (s *ProxyServer) ListTests(
+	c context.Context, req *modelzoo.Empty) (
+	*modelzoo.ListTestsResponse, error) {
+	resp := modelzoo.ListTestsResponse{}
+
+	tests := make([]schema.ModelVersion, 0)
+	if err := s.db.Find(&models).Error; err != nil {
+		log.Panicf("Can't list models from db: %s", err)
+	}
+
+	for _, model := range models {
+		profiles := make([]schema.ModelMetaData, 0)
+		if err := s.db.Model(&model).Related(&profiles).Error; err != nil {
+			log.Panicf("Can't retrieve model metadata for model %s:%v", model.Name, err)
+		}
+
+		kvs := make([]*modelzoo.KVPair, 0)
+		for _, profile := range profiles {
+			kvs = append(kvs, &modelzoo.KVPair{Key: profile.Key, Value: profile.Value})
+		}
+
+		resp.Models = append(resp.Models, &modelzoo.Model{ModelName: model.Name, Metadata: kvs})
+	}
+
+	return &resp, nil
+}
+
 // CreateUser ...
 func (s *ProxyServer) CreateUser(ctx context.Context, user *modelzoo.User) (*modelzoo.Empty, error) {
 	userRecord := schema.User{Email: user.Email, Password: user.Password}

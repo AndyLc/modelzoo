@@ -92,6 +92,15 @@ type ModelVersion struct {
 	Name string `gorm:"unique"`
 }
 
+// ModelVersion represents a single model and its metadata
+type TestVersion struct {
+	gorm.Test
+
+	// Each model has some descriptive name
+	// Example: resnet:v2
+	Name string `gorm:"unique"`
+}
+
 // Query is a trace of a single query made from client
 type Query struct {
 	gorm.Model
@@ -124,9 +133,34 @@ type ModelMetaData struct {
 	Value string
 }
 
+type TestMetaData struct {
+	gorm.Test
+	// There are metadata associated with models
+	TestVersionID int
+	TestVersion   TestVersion
+
+	// K-V pair are non-binding. No unique-ness constraint
+	Key   string
+	Value string
+}
+
 func GetMetadataMap(db *gorm.DB, model *ModelVersion) (map[string]string, error) {
 	relavantMetadata := make([]*ModelMetaData, 0)
 	if err := db.Model(&model).Related(&relavantMetadata).Error; err != nil {
+		return nil, err
+	}
+
+	reducedMap := map[string]string{}
+	for _, entry := range relavantMetadata {
+		reducedMap[entry.Key] = entry.Value
+	}
+
+	return reducedMap, nil
+}
+
+func GetTestMetadataMap(db *gorm.DB, test *TestVersion) (map[string]string, error) {
+	relavantMetadata := make([]*TestMetaData, 0)
+	if err := db.Test(&test).Related(&relavantMetadata).Error; err != nil {
 		return nil, err
 	}
 
@@ -150,6 +184,30 @@ func CreateModel(db *gorm.DB, model *modelzoo.Model) error {
 	for _, metadata := range model.Metadata {
 		metadataRecord := ModelMetaData{
 			ModelVersion: modelRecord,
+			Key:          metadata.Key,
+			Value:        metadata.Value,
+		}
+		if err := tx.Create(&metadataRecord).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	tx.Commit()
+	return nil
+}
+
+func CreateTest(db *gorm.DB, test *modelzoo.Test) error {
+	tx := db.Begin()
+
+	testRecord := TestVersion{Name: test.TestName}
+	if err := tx.Create(&testRecord).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	for _, metadata := range test.Metadata {
+		metadataRecord := TestMetaData{
+			TestVersion: testRecord,
 			Key:          metadata.Key,
 			Value:        metadata.Value,
 		}
