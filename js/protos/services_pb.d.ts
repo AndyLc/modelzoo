@@ -1,5 +1,7 @@
 import * as jspb from "google-protobuf"
 
+import * as google_api_annotations_pb from './google/api/annotations_pb';
+
 export class Image extends jspb.Message {
   getMetadataMap(): jspb.Map<string, string>;
   clearMetadataMap(): void;
@@ -177,6 +179,30 @@ export namespace Model {
   }
 }
 
+export class Test extends jspb.Message {
+  getTestName(): string;
+  setTestName(value: string): void;
+
+  getMetadataList(): Array<KVPair>;
+  setMetadataList(value: Array<KVPair>): void;
+  clearMetadataList(): void;
+  addMetadata(value?: KVPair, index?: number): KVPair;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Test.AsObject;
+  static toObject(includeInstance: boolean, msg: Test): Test.AsObject;
+  static serializeBinaryToWriter(message: Test, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Test;
+  static deserializeBinaryFromReader(message: Test, reader: jspb.BinaryReader): Test;
+}
+
+export namespace Test {
+  export type AsObject = {
+    testName: string,
+    metadataList: Array<KVPair.AsObject>,
+  }
+}
+
 export class User extends jspb.Message {
   getEmail(): string;
   setEmail(value: string): void;
@@ -237,6 +263,26 @@ export namespace ListModelsResponse {
   }
 }
 
+export class ListTestsResponse extends jspb.Message {
+  getTestsList(): Array<Test>;
+  setTestsList(value: Array<Test>): void;
+  clearTestsList(): void;
+  addTests(value?: Test, index?: number): Test;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ListTestsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ListTestsResponse): ListTestsResponse.AsObject;
+  static serializeBinaryToWriter(message: ListTestsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ListTestsResponse;
+  static deserializeBinaryFromReader(message: ListTestsResponse, reader: jspb.BinaryReader): ListTestsResponse;
+}
+
+export namespace ListTestsResponse {
+  export type AsObject = {
+    testsList: Array<Test.AsObject>,
+  }
+}
+
 export class ImageDownloadRequest extends jspb.Message {
   getUrl(): string;
   setUrl(value: string): void;
@@ -281,19 +327,16 @@ export class Payload extends jspb.Message {
   setImage(value?: Image): void;
   hasImage(): boolean;
   clearImage(): void;
-  hasImage(): boolean;
 
   getText(): Text | undefined;
   setText(value?: Text): void;
   hasText(): boolean;
   clearText(): void;
-  hasText(): boolean;
 
   getTable(): Table | undefined;
   setTable(value?: Table): void;
   hasTable(): boolean;
   clearTable(): void;
-  hasTable(): boolean;
 
   getPayloadCase(): Payload.PayloadCase;
 

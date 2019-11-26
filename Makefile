@@ -5,19 +5,23 @@ placeholder:
 
 proto-js:
 	protoc \
-		--js_out=import_style=commonjs,binary:js \
-		--grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:js \
-		./protos/*.proto
+	  -I ${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		-I ${GOPATH}/src/github.com/harbor-ml/modelzoo/protos \
+		--js_out=import_style=commonjs,binary:${PWD}/js/protos \
+		--grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:${PWD}/js/protos \
+		${PWD}/protos/services.proto
 
 proto-py:
-	protoc \ 
+	protoc \
+	  -I ${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+		-I ${GOPATH}/src/github.com/harbor-ml/modelzoo/protos \
 		--python_out=python/model_io --mypy_out=python/model_io \
-		./protos/*.proto
+		${GOPATH}/src/github.com/harbor-ml/modelzoo/protos/services.proto
 
 .PHONY: proto-py-pkg
 proto-py-pkg:
 	python -m grpc_tools.protoc -I protos --python_out=modelzoo/protos --grpc_python_out=modelzoo/protos protos/services.proto
-	
+
 proto-go:
 	protoc -I/usr/local/include -I . \
   		-I ${GOPATH}/src \
@@ -37,7 +41,7 @@ protos: proto-js proto-py proto-go
 
 .PHONY: link
 link:
-	cd js; npm link ./protos
+	cd js/protos; yarn link
 
 .PHONY: base
 base:

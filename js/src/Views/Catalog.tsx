@@ -25,7 +25,6 @@ export const Catalog: FC<CatalogProps> = props => {
   }, [client]);
 
   let cards = models.map((model: ModelObject, index, arr) => {
-    //if (true) {
       return (
         <Col span={8}>
           <Card
@@ -37,7 +36,6 @@ export const Catalog: FC<CatalogProps> = props => {
           </Card>
         </Col>
       );
-    //}
   });
 
   return (
